@@ -1,0 +1,3 @@
+adafruit-ampy==1.0.5
+nose==1.3.7
+esptool==2.5.0
