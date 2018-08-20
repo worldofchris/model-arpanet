@@ -8,7 +8,7 @@ The model ARPANET IMPs code requires [Python 3](https://www.python.org/), tested
 
 The IMP is wired up to three [neopixels](https://www.adafruit.com/product/1938):  
 
-![Nodemcu IMPs](assets/imp.jpg)
+![Nodemcu IMPs](assets/imps.jpg)
 
 L-R Prototype breadboard build, build soldered on to protoboard, soldered build mounted in an ABS project box.
 
