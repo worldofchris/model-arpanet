@@ -2,24 +2,35 @@
 
 Blinkenlights for the nodemcu model ARPANET IMPs
 
-## Erase
+## Dependencies
 
-	esptool.py erase_flash
+The model ARPANET IMPs code requires [Python 3](https://www.python.org/), tested with Python 3.6.5 for the host and [MicroPython](https://micropython.org/) for the [nodemcu](http://nodemcu.com/index_en.html) IMPs. 
 
-## Flash with Micropython firmware
+The IMP is wired up to three [neopixels](https://www.adafruit.com/product/1938):  
 
-https://nodemcu.readthedocs.io/en/latest/en/flash/
-https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html#deploying-the-firmware
+![Nodemcu IMPs](assets/imp.jpg)
+
+L-R Prototype breadboard build, build soldered on to protoboard, soldered build mounted in an ABS project box.
+
+To get started, install the Python dependencies with:
+
+	make develop
+
+## Configuring the IMP
+
+First erase the flash on the nodemcu:
+
+
+	make erase
+
+Then flash with the [MicroPython firmware](https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html#getting-the-firmware):
+
+	make flash
 	
 ## Running the tests
 
-	nosetests
+	make test
 
-## Installing
+## Deploying to a nodemcu
 
-	make install
-
-## Dependencies
-
-Python 3.6.5 plus contents of `requirements.txt`
-
+	make deploy

@@ -1,32 +1,10 @@
 import socket
-import neopixel
-import machine
 import ujson
 
-ssid = '~~~~~~~~~~'
-password = '~~~~~~~~~'
+ssid = '-'
+password = '-'
 UDP_PORT = 5005
-palette = [(255,0,0),(0,255,0),(0,0,255)]
-length = 3
-pin = 2
 delay = 2000
-
-class Display:
-    def __init__(self):
-        self.np = neopixel.NeoPixel(machine.Pin(pin), length)
-
-    def length(self):
-        return length
-
-    def set_light(self, light_index, palette_index):
-        self.np[light_index] = palette[palette_index]
-        self.np.write()
-
-    def clear(self, write=True):
-        for i in range(length):
-            self.np[i] = (0, 0, 0)
-        if write:
-            self.np.write()
 
 class Node:
     def __init__(self, name, network=None, display=None):
@@ -79,7 +57,10 @@ class Node:
         while self.connected():
             data, addr = self.sock.recvfrom(1024) # buffer size is 1024 bytes
             print ("received message:", data)
-            body = ujson.loads(data)
-            lights = (body[self.name])
-            for i in range(len(lights)):
-                self.display.set_light(i, lights[i])
+            try:
+                body = ujson.loads(data)
+                lights = (body[self.name])
+                for i in range(len(lights)):
+                    self.display.set_light(i, lights[i])
+            except KeyError:
+                pass

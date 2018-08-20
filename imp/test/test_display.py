@@ -1,5 +1,5 @@
 import unittest
-from arpa import Display
+from imp.display import Display
 import neopixel
 from unittest.mock import MagicMock, patch
 

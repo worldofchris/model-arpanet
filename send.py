@@ -12,7 +12,9 @@ sock.setsockopt(socket.SOL_SOCKET, socket.SO_BROADCAST, 1)
 
 while True:
 
-	state = {'utah': [random.randint(0,2), random.randint(0,2), random.randint(0,2)]}
+	state = {'utah': [random.randint(0,2), random.randint(0,2), random.randint(0,2)],
+			 'sri': [random.randint(0,2), random.randint(0,2), random.randint(0,2)]}
 	MESSAGE = json.dumps(state)
 	sock.sendto(MESSAGE.encode('utf-8'), (UDP_IP, UDP_PORT))
 	time.sleep(.5)
+
