@@ -20,7 +20,6 @@ To get started, install the Python dependencies with:
 
 First erase the flash on the nodemcu:
 
-
 	make erase
 
 Then flash with the [MicroPython firmware](https://docs.micropython.org/en/latest/esp8266/esp8266/tutorial/intro.html#getting-the-firmware):
@@ -33,4 +32,6 @@ Then flash with the [MicroPython firmware](https://docs.micropython.org/en/lates
 
 ## Deploying to a nodemcu
 
-	make deploy
+	make deploy [NODENAME=name]
+
+Where `name` is the unique name for the IMP which it uses to identify messages broadcast from the host.
