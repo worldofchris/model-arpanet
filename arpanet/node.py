@@ -7,4 +7,10 @@ class Node:
         self.links[destination.name] = destination
 
     def route(self, destination):
-        return[self.links[destination].name, self.name]
+        try:
+            return[self.links[destination].name, self.name]
+        except KeyError:
+            for link in self.links:
+                rest = self.links[link].route(destination)
+                rest.append(self.name)
+                return rest

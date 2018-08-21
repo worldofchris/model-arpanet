@@ -15,7 +15,15 @@ class test_message(unittest.TestCase):
 
         self.ucla.add_link(self.sri)
 
+        self.utah = Node('utah')
+        self.sri.add_link(self.utah)
+
     def test_send_message_to_peer(self):
         message = Message('sri', 1)
         message.send(self.ucla)
         assert message.location == 'sri', message.location
+
+    def test_send_message_to_non_peer(self):
+        message = Message('utah', 1)
+        route = message.send(self.ucla)
+        assert message.location == 'utah', message.location
