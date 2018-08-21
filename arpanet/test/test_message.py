@@ -27,3 +27,12 @@ class test_message(unittest.TestCase):
         message = Message('utah', 1)
         route = message.send(self.ucla)
         assert message.location == 'utah', message.location
+
+    def test_send_with_two_routes(self):
+        ucsb = Node('ucsb')
+        self.ucla.add_link(ucsb)
+        ucsb.add_link(self.sri)
+
+        message = Message('utah', 1)
+        route = message.send(self.ucla)
+        assert message.location == 'utah', message.location

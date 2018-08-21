@@ -8,9 +8,12 @@ class Node:
 
     def route(self, destination):
         try:
-            return[self.links[destination].name, self.name]
+            return[[self.links[destination].name, self.name]]
         except KeyError:
+            routes = []
             for link in self.links:
                 rest = self.links[link].route(destination)
-                rest.append(self.name)
-                return rest
+                for r in rest:
+                    r.append(self.name)
+                    routes.append(r)
+            return routes

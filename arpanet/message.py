@@ -7,4 +7,5 @@ class Message:
 
     def send(self, origin):
         self.route = origin.route(self.dest)
-        self.location = self.route[0]
+        self.location = self.route[0][0]
+        return self.route
