@@ -6,6 +6,7 @@
 
 import unittest
 from arpanet.node import Node
+from arpanet.link import Link
 # from unittest.mock import MagicMock, patch
 
 class test_node(unittest.TestCase):
@@ -14,5 +15,5 @@ class test_node(unittest.TestCase):
         ucla = Node('ucla')
         sri = Node('sri')
 
-        ucla.add_link(sri)
-        assert ucla.links['sri'].name == 'sri'
+        ucla.add_link(Link(sri, 0))
+        assert ucla.links['sri'].dest.name == 'sri'
