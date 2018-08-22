@@ -59,3 +59,11 @@ class TestMessage(unittest.TestCase):
         self.sri.add_link(Link(self.ucla, 1))
         message.send(self.sri)
         assert message.location == 'ucla', message.location
+
+    def test_send_back_from_non_peer(self):
+        """Test send back from non peer"""
+        message = Message('ucla', 1)
+        self.sri.add_link(Link(self.ucla, 1))
+        self.utah.add_link(Link(self.sri, 1))
+        message.send(self.utah)
+        assert message.location == 'ucla', message.location
