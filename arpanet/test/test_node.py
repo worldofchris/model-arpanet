@@ -1,19 +1,22 @@
-# a network can be created out of nodes and links
-# e.g ucla can be linked to sri
+"""
+A network can be created out of nodes and links
+e.g ucla can be linked to sri
 
-# a node can have one or more links
-# e.g. ucla can be linked to ucsb and sri
-
+A node can have one or more links
+e.g. ucla can be linked to ucsb and sri
+"""
 import unittest
 from arpanet.node import Node
 from arpanet.link import Link
-# from unittest.mock import MagicMock, patch
 
-class test_node(unittest.TestCase):
+class TestNode(unittest.TestCase):
+    """Test Node"""
+    def setUp(self):
+        self.ucla = Node('ucla')
+        self.sri = Node('sri')
 
     def test_create_network(self):
-        ucla = Node('ucla')
-        sri = Node('sri')
+        """Test create network"""
 
-        ucla.add_link(Link(sri, 0))
-        assert ucla.links['sri'].dest.name == 'sri'
+        self.ucla.add_link(Link(self.sri, 0))
+        assert self.ucla.links['sri'].dest.name == 'sri'
