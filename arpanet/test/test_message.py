@@ -20,17 +20,23 @@ class TestMessage(unittest.TestCase):
         self.utah = Node('utah')
         self.sri.add_link(Link(self.utah, 1))
 
+    def test_send_message_to_origin(self):
+        """Test a node can send a message to itself"""
+        message = Message('ucla', 1)
+        message.send(self.ucla)
+        assert message.location().name == 'ucla', message.location
+
     def test_send_message_to_peer(self):
         """Test send message to peer"""
         message = Message('sri', 1)
         message.send(self.ucla)
-        assert message.location == 'sri', message.location
+        assert message.location().name == 'sri', message.location
 
     def test_send_message_to_non_peer(self):
         """Test send message to non peer"""
         message = Message('utah', 1)
         message.send(self.ucla)
-        assert message.location == 'utah', message.location
+        assert message.location().name == 'utah', message.location
 
     def test_send_with_two_routes(self):
         """Test send with two routes"""
@@ -40,7 +46,7 @@ class TestMessage(unittest.TestCase):
 
         message = Message('utah', 1)
         message.send(self.ucla)
-        assert message.location == 'utah', message.location
+        assert message.location().name == 'utah', message.location
 
     def test_send_by_least_busy_route(self):
         """Test send by least busy route"""
@@ -50,15 +56,15 @@ class TestMessage(unittest.TestCase):
         self.ucla.links['sri'].weight = 10
 
         message = Message('utah', 1)
-        route = message.send(self.ucla)
-        assert route == [self.utah, self.sri, ucsb, self.ucla], route
+        message.send(self.ucla)
+        assert message.route_nodes == [self.utah, self.sri, ucsb, self.ucla]
 
     def test_send_back_from_peer(self):
         """Test send back from peer"""
         message = Message('ucla', 1)
         self.sri.add_link(Link(self.ucla, 1))
         message.send(self.sri)
-        assert message.location == 'ucla', message.location
+        assert message.location().name == 'ucla', message.location
 
     def test_send_back_from_non_peer(self):
         """Test send back from non peer"""
@@ -66,4 +72,16 @@ class TestMessage(unittest.TestCase):
         self.sri.add_link(Link(self.ucla, 1))
         self.utah.add_link(Link(self.sri, 1))
         message.send(self.utah)
-        assert message.location == 'ucla', message.location
+        assert message.location().name == 'ucla', message.location
+
+    def test_step_message_along_route(self):
+        """
+        In order to display the progress of a message on Blinkenlights etc
+        we want to be able to move the message along the route a step (node/light) at a time
+        updating the display as we go
+        """
+        message = Message('utah', 1)
+        message.route(self.ucla)
+        message.step()
+        location = message.location()
+        assert location.name == 'sri'
