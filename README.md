@@ -4,7 +4,7 @@ Blinkenlights for the nodemcu model ARPANET IMPs
 
 ## Dependencies
 
-The model ARPANET IMPs code requires [Python 3](https://www.python.org/), tested with Python 3.6.5 for the host and [MicroPython](https://micropython.org/) for the [nodemcu](http://nodemcu.com/index_en.html) IMPs. 
+The model ARPANET IMPs code requires [Python 3](https://www.python.org/), tested with Python 3.6.5, for the host and [MicroPython](https://micropython.org/) for the [nodemcu](http://nodemcu.com/index_en.html) IMPs. 
 
 The IMP is wired up to three [neopixels](https://www.adafruit.com/product/1938):  
 

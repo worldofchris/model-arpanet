@@ -31,15 +31,16 @@ class Message:
         """
         routes = origin.route(self.dest)
         weights = []
-        for route in routes:
-            steps = list(reversed(route))
-            weight = 0
-            for i in range(len(steps)-1):
-                weight = weight + steps[i].links[steps[i+1].name].weight
-            weights.append(weight)
-        lowest = (weights.index(min(weights)))
-        self.route_nodes = routes[lowest]
-        return self.route
+        if routes:
+            for route in routes:
+                steps = list(reversed(route))
+                weight = 0
+                for i in range(len(steps)-1):
+                    weight = weight + steps[i].links[steps[i+1].name].weight
+                weights.append(weight)
+            lowest = (weights.index(min(weights)))
+            self.route_nodes = routes[lowest]
+        return
 
     def step(self):
         """
