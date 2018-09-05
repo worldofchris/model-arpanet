@@ -34,7 +34,7 @@ class TestNode(unittest.TestCase):
 
         message = Message('utah', 1)
         self.ucla.add_message(message)
-        assert self.ucla.buffer_contents() == [message, None, None], self.ucla.buffer_contents()
+        assert self.ucla.buffer_contents(0) == [message, None, None], self.ucla.buffer_contents(0)
 
     def test_move_message_through_buffer(self):
         """
@@ -44,8 +44,22 @@ class TestNode(unittest.TestCase):
 
         message = Message('utah', 1)
         self.ucla.add_message(message)
+        message_2 = Message('utah', 2)
+        self.ucla.add_message(message_2, 1)
         self.ucla.process()
-        assert self.ucla.buffer_contents() == [None, message, None], self.ucla.buffer_contents()
+        assert self.ucla.buffer_contents(0) == [None, message, None], self.ucla.buffer_contents(0)
+        assert self.ucla.buffer_contents(1) == [None, message_2, None], self.ucla.buffer_contents(1)
+
+    def test_add_message_to_rl_buffer(self):
+        """
+        When we have messages going in opposite directions the effect is a bit meh if they
+        always go right to left on the node.  So I'm adding a second buffer for messages
+        going the other way which can then be ORed together onto the LEDs.
+        """
+
+        message = Message('utah', 1)
+        self.ucla.add_message(message, 1)
+        assert self.ucla.buffer_contents(1) == [message, None, None], self.ucla.buffer_contents(1)
 
     def test_message_gets_sent_when_leaves_buffer(self):
         """
@@ -63,7 +77,7 @@ class TestNode(unittest.TestCase):
         for _ in range(self.ucla.buffer_length):
             self.ucla.process()
         assert self.sri.add_message.call_count == 1
-        assert self.ucla.buffer_contents() == [None, None, None], self.ucla.buffer_contents()
+        assert self.ucla.buffer_contents(0) == [None, None, None], self.ucla.buffer_contents(0)
 
     def test_message_leaves_destination_node(self):
         """
@@ -74,7 +88,7 @@ class TestNode(unittest.TestCase):
 
         for _ in range(self.ucla.buffer_length):
             self.ucla.process()
-        assert self.ucla.buffer_contents() == [None, None, None], self.ucla.buffer_contents()
+        assert self.ucla.buffer_contents(0) == [None, None, None], self.ucla.buffer_contents(0)
         assert message.route_nodes is not None
 
     def test_add_message_to_buffer_when_full(self):
@@ -99,18 +113,47 @@ class TestNode(unittest.TestCase):
         self.ucla.process()
         self.ucla.display.update.assert_called_with('ucla', [None, None, None])
 
+    def test_combine_both_buffers_in_display(self):
+        """
+        The display should show messages travelling in both directions
+        """
+        display = MagicMock()
+        self.ucla.display = display
+        message = Message('utah', 1)
+        self.ucla.add_message(message)
+        message_2 = Message('utah', 2)
+        self.ucla.add_message(message_2, 1)
+        self.ucla.display.update.assert_called_with('ucla', [1, None, 2])
+
+    def test_link_to_rl_buffer(self):
+        """
+        Links can indicate whether messages sent via them should be
+        added to the right to left or the left to right buffer.
+        """
+        message = Message('sri', 1)
+        self.sri.add_message = MagicMock()
+        self.ucla.add_link(Link(self.sri, 0, True))
+        self.ucla.add_message(message)
+        for _ in range(self.ucla.buffer_length):
+            self.ucla.process()
+        self.sri.add_message.assert_called_with(message, 1)
+
     def test_send_to_non_existent_node(self):
+        """
+        Fail gracefully if there is nowhere to route the message
+        """
         message = Message('foo', 1)
         message.route(self.ucla)
+        assert message.route_nodes == None, message.route_nodes
 
     def test_dont_go_round_in_circles(self):
         """
         If there is a route back to the origin, check we don't end up going round in circles
         """
-        NODES = [('ucla', 0, 0),
-                 ('ucsb', 3, 3),
-                 ('sri',  3, 6),
-                 ('utah', 6, 9)]
+        NODES = ['ucla',
+                 'ucsb',
+                 'sri',
+                 'utah']
 
         LINKS = [('ucla', 'sri', 1),
                  ('ucla', 'ucsb', 1),
@@ -120,3 +163,14 @@ class TestNode(unittest.TestCase):
                  ('sri', 'ucsb', 1),
                  ('sri', 'ucla', 1),
                  ('ucsb', 'ucla', 1)]
+
+        network = {}
+        for node in NODES:
+            network[node] = Node(node)
+
+        for link in LINKS:
+            network[link[0]].add_link(Link(network[link[1]], link[2]))
+
+        message = Message('utah', 1)
+        message.route(network['ucla'])
+        assert message.route_nodes[0] == network['utah']

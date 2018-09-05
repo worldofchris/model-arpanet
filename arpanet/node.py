@@ -3,6 +3,7 @@ A node on the model network.
 """
 
 from collections import deque
+from operator import add
 
 class Node:
     """ A node on the model network """
@@ -11,7 +12,8 @@ class Node:
         self.links = {}
         self.load = 0
         self.buffer_length = 3
-        self.buffer = deque([None] * (self.buffer_length + 1))
+        self.buffer = [deque([None] * (self.buffer_length + 1)),
+                       deque([None] * (self.buffer_length + 1))]
         self.display = display
 
     def __unicode__(self):
@@ -24,46 +26,53 @@ class Node:
         """Add a link to a peer node"""
         self.links[link.dest.name] = link
 
-    def add_message(self, message):
+    def add_message(self, message, buffer=0):
         """
         Add a message to the buffer for processing
         """
         message.route(self)
-        if self.buffer[0] is not None:
+        if self.buffer[buffer][0] is not None:
             return False
-        self.buffer[0] = message
+        self.buffer[buffer][0] = message
         self.update_display()
         return True
 
-    def buffer_contents(self):
+    def buffer_contents(self, buffer_index):
         """
-        What's in the buffer?
+        What's in the buffer?  We have two, one for showing
+        messages going one way, and one for going the other.
         """
-        return list(self.buffer)[0:self.buffer_length]
+        return list(self.buffer[buffer_index])[0:self.buffer_length]
 
     def process(self):
         """
         Process any messages in the buffer
         """
 
-        self.buffer.rotate()
-        message = self.buffer[-1]
-        if message is not None:
-            location = message.route_nodes.index(self)-1
-            if location >= 0:
-                message.route_nodes[location].add_message(message)
-            self.buffer[-1] = None
+        for i, buffer in enumerate(self.buffer):
+            buffer.rotate()
+            message = buffer[-1]
+            if message is not None:
+                location = message.route_nodes.index(self)-1
+                if location >= 0:
+                    right_to_left = int(self.links[message.route_nodes[location].name].right_to_left)
+                    message.route_nodes[location].add_message(message, right_to_left)
+                buffer[-1] = None
         self.update_display()
 
     def update_display(self):
 
         def light(message):
             if message is None:
-                return message
+                return 0
             return message.body
 
+        lights_1 = [light(i) for i in self.buffer_contents(0)]
+        lights_2 = list(reversed([light(i) for i in self.buffer_contents(1)]))
+        all_lights = list(map(add, lights_1, lights_2))
+
         if self.display is not None:
-            self.display.update(self.name, [light(i) for i in self.buffer_contents()])
+            self.display.update(self.name, [None if l == 0 else l for l in all_lights])
 
     def route(self, destination, depth=0):
         """
