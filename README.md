@@ -32,6 +32,15 @@ Then flash with the [MicroPython firmware](https://docs.micropython.org/en/lates
 
 ## Deploying to a nodemcu
 
+Put the `SSID` and `password` for the WIFI you are using in a file called `wifi.txt` in the format:
+
+	ssid,password
+
 	make deploy [NODENAME=name]
 
 Where `name` is the unique name for the IMP which it uses to identify messages broadcast from the host.
+
+To get to the REPL on the device:
+
+	picocom -b 115200 /dev/tty.SLAB_USBtoUART
+

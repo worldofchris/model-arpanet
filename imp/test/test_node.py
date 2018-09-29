@@ -5,6 +5,8 @@ import unittest
 import json
 from unittest.mock import MagicMock, patch
 
+WIFI = ('ssid', 'password')
+
 class test_node(unittest.TestCase):
 
     @patch('socket.socket')
@@ -23,7 +25,7 @@ class test_node(unittest.TestCase):
         mock_socket = MagicMock()
         socket.return_value = mock_socket
 
-        node = Node('utah', network, display)
+        node = Node('utah', WIFI, network, display)
         assert node.display.clear.call_count == 1
         node.connect()
         assert network.active.call_count == 1
@@ -36,7 +38,7 @@ class test_node(unittest.TestCase):
     @patch('socket.socket')
     def test_recv(self, socket):
 
-        state = {'utah': [1,2,3]}
+        state = {'utah': [1, 2, 3]}
         message = json.dumps(state)
 
         network = MagicMock()
@@ -45,7 +47,7 @@ class test_node(unittest.TestCase):
         mock_socket.recvfrom = MagicMock(return_value=(message, None))
         socket.return_value = mock_socket
 
-        node = Node('utah', network, display)
+        node = Node('utah', WIFI, network, display)
         node.connected = MagicMock()
         node.connected.side_effect = [True, False]
         node.connect()
@@ -56,7 +58,7 @@ class test_node(unittest.TestCase):
     @patch('socket.socket')
     def test_recv(self, socket):
 
-        state = {'sri': [1,2,3]}
+        state = {'sri': [1, 2, 3]}
         message = json.dumps(state)
 
         network = MagicMock()
@@ -65,7 +67,7 @@ class test_node(unittest.TestCase):
         mock_socket.recvfrom = MagicMock(return_value=(message, None))
         socket.return_value = mock_socket
 
-        node = Node('utah', network, display)
+        node = Node('utah', WIFI, network, display)
         node.connected = MagicMock()
         node.connected.side_effect = [True, False]
         node.connect()
