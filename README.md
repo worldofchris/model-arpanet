@@ -2,6 +2,8 @@
 
 Blinkenlights for the nodemcu model ARPANET IMPs
 
+TRAVIS TEST BADGE GOES HERE
+
 ## Dependencies
 
 The model ARPANET IMPs code requires [Python 3](https://www.python.org/), tested with Python 3.6.5, for the host and [MicroPython](https://micropython.org/) for the [nodemcu](http://nodemcu.com/index_en.html) IMPs. 
