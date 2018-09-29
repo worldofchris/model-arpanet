@@ -2,7 +2,7 @@
 
 Blinkenlights for the nodemcu model ARPANET IMPs
 
-TRAVIS TEST BADGE GOES HERE
+[![Build Status](https://travis-ci.org/worldofchris/model-arpanet.svg?branch=master)](https://travis-ci.org/worldofchris/model-arpanet)
 
 ## Dependencies
 
