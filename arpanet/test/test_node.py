@@ -174,3 +174,24 @@ class TestNode(unittest.TestCase):
         message = Message('utah', 1)
         message.route(network['ucla'])
         assert message.route_nodes[0] == network['utah']
+
+    def test_ascii_version_of_node(self):
+        """
+        To make it easier to inspect the network we want to be able to see what the
+        contents of each node's buffers is
+        """
+        self.ucla.add_message(Message('foo', 1))
+        assert self.ucla.ascii_art() == "[1--][---]", self.ucla.ascii_art()
+
+    def test_get_messages(self):
+        messages = [Message('foo', 1),
+                    Message('foo', 2),
+                    Message('foo', 3)]
+        self.ucla.add_message(messages[0])
+        self.ucla.add_message(messages[1], 1)
+        self.ucla.process()
+        self.ucla.add_message(messages[2])
+
+        for message in self.ucla.messages():
+            assert message in messages
+

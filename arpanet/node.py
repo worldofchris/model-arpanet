@@ -53,11 +53,18 @@ class Node:
             buffer.rotate()
             message = buffer[-1]
             if message is not None:
-                location = message.route_nodes.index(self)-1
+                try:
+                    location = message.route_nodes.index(self)-1
+                except ValueError:
+                    location = 0
                 if location >= 0:
                     right_to_left = int(self.links[message.route_nodes[location].name].right_to_left)
-                    message.route_nodes[location].add_message(message, right_to_left)
-                buffer[-1] = None
+                    if message.route_nodes[location].add_message(message, right_to_left):
+                        buffer[-1] = None
+                    else:
+                        buffer.rotate(-1)
+                else:
+                    buffer[-1] = None
         self.update_display()
 
     def update_display(self):
@@ -99,3 +106,31 @@ class Node:
                     r.append(self)
                     routes.append(r)
             return routes
+
+    def ascii_art(self):
+        """
+        ASCII art representation of buffers
+        """
+        ascii_art = ''
+        for i in range(2):
+            ascii_art += '['
+            buffer = self.buffer_contents(i)
+            for message in buffer:
+                if message is None:
+                    ascii_art += '-'
+                else:
+                    ascii_art += message.ascii_art()
+            ascii_art += ']'
+        return ascii_art
+
+    def messages(self):
+        """
+        Get messages on node
+        """
+        messages = []
+        for i in range(2):
+            for message in self.buffer_contents(i):
+                if message is not None:
+                    messages.append(message)
+
+        return messages

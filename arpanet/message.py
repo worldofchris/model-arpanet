@@ -49,3 +49,9 @@ class Message:
         if self.location_index is None:
             self.location_index = 0
         self.location_index += 1
+
+    def ascii_art(self):
+        """
+        ASCII art representation of message
+        """
+        return str(self.body)

@@ -85,3 +85,8 @@ class TestMessage(unittest.TestCase):
         message.step()
         location = message.location()
         assert location.name == 'sri'
+
+    def test_ascii_representation_of_message(self):
+
+        message = Message('utah', 1)
+        assert message.ascii_art() == '1'
