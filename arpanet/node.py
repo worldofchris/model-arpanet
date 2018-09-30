@@ -44,14 +44,19 @@ class Node:
         """
         return list(self.buffer[buffer_index])[0:self.buffer_length]
 
-    def process(self):
+    def process(self, buffer=None):
         """
-        Process any messages in the buffer
+        Process any messages in both buffers if none specifed or on a
+        specific buffer
         """
+        if buffer is None:
+            buffers = range(len(self.buffer))
+        else:
+            buffers = range(buffer, buffer+1)
 
-        for i, buffer in enumerate(self.buffer):
-            buffer.rotate()
-            message = buffer[-1]
+        for i in buffers:
+            self.buffer[i].rotate()
+            message = self.buffer[i][-1]
             if message is not None:
                 try:
                     location = message.route_nodes.index(self)-1
@@ -60,11 +65,11 @@ class Node:
                 if location >= 0:
                     right_to_left = int(self.links[message.route_nodes[location].name].right_to_left)
                     if message.route_nodes[location].add_message(message, right_to_left):
-                        buffer[-1] = None
+                        self.buffer[i][-1] = None
                     else:
-                        buffer.rotate(-1)
+                        self.buffer[i].rotate(-1)
                 else:
-                    buffer[-1] = None
+                    self.buffer[i][-1] = None
         self.update_display()
 
     def update_display(self):
@@ -123,12 +128,18 @@ class Node:
             ascii_art += ']'
         return ascii_art
 
-    def messages(self):
+    def messages(self, buffer=None):
         """
         Get messages on node
         """
+
+        if buffer is None:
+            buffers = range(len(self.buffer))
+        else:
+            buffers = range(buffer, buffer+1)
+
         messages = []
-        for i in range(2):
+        for i in buffers:
             for message in self.buffer_contents(i):
                 if message is not None:
                     messages.append(message)

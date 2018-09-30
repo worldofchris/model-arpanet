@@ -195,3 +195,5 @@ class TestNode(unittest.TestCase):
         for message in self.ucla.messages():
             assert message in messages
 
+        assert messages[0] in self.ucla.messages(0)
+        assert messages[1] in self.ucla.messages(1)
