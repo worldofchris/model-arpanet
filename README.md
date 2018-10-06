@@ -1,6 +1,6 @@
-# Model ARPANET IMPs
+# Model Arpanet
 
-Blinkenlights for the nodemcu model ARPANET IMPs
+Model of the Arpanet featuring Blinkenlights.  Used in my talk [Agile Insights from the Birth of the Internet](https://speakerdeck.com/worldofchris/agile-insights-from-the-birth-of-the-internet) at [Lean Agile Scotland 2018](http://leanagile.scot/2018/sessions/index.php?session=102).
 
 [![Build Status](https://travis-ci.org/worldofchris/model-arpanet.svg?branch=master)](https://travis-ci.org/worldofchris/model-arpanet)
 
