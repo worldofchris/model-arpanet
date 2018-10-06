@@ -48,3 +48,16 @@ To get to the REPL on the device:
 
 	picocom -b 115200 /dev/tty.SLAB_USBtoUART
 
+## Running the demo from the talk
+
+The demo of messages on the four node ARPANET is run with:
+
+	python script.py
+
+The disco lights bit at the end of the talk with:
+
+	python disco.py
+
+## Design
+
+![Domain Model](assets/domain-model.png)
