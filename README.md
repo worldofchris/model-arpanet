@@ -58,6 +58,10 @@ The disco lights bit at the end of the talk with:
 
 	python disco.py
 
-## Design
+## Software Design
 
 ![Domain Model](assets/domain-model.png)
+
+## Hardware Design
+
+![Circuit Diagram](assets/circuit-diagram.png)
