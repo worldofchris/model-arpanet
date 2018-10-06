@@ -17,6 +17,7 @@ class TestNode(unittest.TestCase):
     def setUp(self):
         self.ucla = Node('ucla')
         self.sri = Node('sri')
+        self.sri_host = Node('sri_host', host=True)
 
     def test_create_network(self):
         """Test create network"""
@@ -104,15 +105,6 @@ class TestNode(unittest.TestCase):
         assert self.ucla.add_message(message) == True
         assert self.ucla.add_message(message) == False
 
-    def test_display_state_change(self):
-        """
-        When state changes let the display know so it can be updated
-        """
-        display = MagicMock()
-        self.ucla.display = display
-        self.ucla.process()
-        self.ucla.display.update.assert_called_with('ucla', [None, None, None])
-
     def test_combine_both_buffers_in_display(self):
         """
         The display should show messages travelling in both directions
@@ -197,3 +189,26 @@ class TestNode(unittest.TestCase):
 
         assert messages[0] in self.ucla.messages(0)
         assert messages[1] in self.ucla.messages(1)
+
+    def test_keep_messages_on_host(self):
+        """
+        If a node is a host rather than an IMP then we want the message lights to stay on
+        once the message has arrived
+        """
+        m = Message('sri', 1)
+        m2 = Message('sri', 1)
+        m3 = Message('sri', 1)
+        m4 = Message('sri', 1)
+        self.sri_host.add_message(m)
+        self.sri_host.process()
+        self.sri_host.process()
+        assert self.sri_host.buffer_contents(0) == [None, None, m], self.sri_host.buffer_contents(0)
+        self.sri_host.add_message(m2)
+        self.sri_host.process()
+        assert self.sri_host.buffer_contents(0) == [None, m2, m], self.sri_host.buffer_contents(0)
+        self.sri_host.add_message(m3)
+        assert self.sri_host.buffer_contents(0) == [m3, m2, m], self.sri_host.buffer_contents(0)
+        self.sri_host.process()
+        self.sri_host.add_message(m4)
+        assert self.sri_host.buffer_contents(0) == [m4, m3, m2], self.sri_host.buffer_contents(0)
+

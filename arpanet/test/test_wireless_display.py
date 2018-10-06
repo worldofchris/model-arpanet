@@ -16,10 +16,10 @@ class TestWirelessDisplay(unittest.TestCase):
         """Update the display with the state of a node"""
         self.transmitter.enqueue = MagicMock()
 
-        display = Wireless('ucla', self.transmitter)
-        display.update([None, None, None])
+        display = Wireless(self.transmitter)
+        display.update('ucla', [None, None, None])
         # Display doesn't know anything about messages.  It just knows about
         # Palette Indicies.
-        display.update([1, 2, 3])
+        display.update('ucla', [1, 2, 3])
         expected = {'ucla': [1, 2, 3]}
         self.transmitter.enqueue.assert_called_with(expected)

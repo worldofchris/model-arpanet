@@ -4,10 +4,11 @@ A node on the model network.
 
 from collections import deque
 from operator import add
+import itertools
 
 class Node:
     """ A node on the model network """
-    def __init__(self, name, display=None):
+    def __init__(self, name, display=None, host=False):
         self.name = name
         self.links = {}
         self.load = 0
@@ -15,6 +16,7 @@ class Node:
         self.buffer = [deque([None] * (self.buffer_length + 1)),
                        deque([None] * (self.buffer_length + 1))]
         self.display = display
+        self.host = host
 
     def __unicode__(self):
         return '{}-->{}'.format(self.name, list(self.links.keys()))
@@ -55,22 +57,35 @@ class Node:
             buffers = range(buffer, buffer+1)
 
         for i in buffers:
-            self.buffer[i].rotate()
-            message = self.buffer[i][-1]
-            if message is not None:
-                try:
-                    location = message.route_nodes.index(self)-1
-                except ValueError:
-                    location = 0
-                if location >= 0:
-                    right_to_left = int(self.links[message.route_nodes[location].name].right_to_left)
-                    if message.route_nodes[location].add_message(message, right_to_left):
-                        self.buffer[i][-1] = None
-                    else:
-                        self.buffer[i].rotate(-1)
+            if self.host:
+                # This feels like a bit of a hack.  Should we subclass host from node?
+                # Also what if someone links a host directly to a host?
+                if None in list(itertools.islice(self.buffer[i], 0, len(self.buffer[i])-1)):
+                    for j in reversed(range(1, len(self.buffer[i])-1)):
+                        if self.buffer[i][j] is None:
+                            self.buffer[i][j] = self.buffer[i][j-1]
+                            self.buffer[i][j-1] = None
                 else:
-                    self.buffer[i][-1] = None
-        self.update_display()
+                    self.buffer[i].pop()
+                    self.buffer[i].insert(0, None)
+            else:
+                self.buffer[i].rotate()
+                message = self.buffer[i][-1]
+                if message is not None:
+                    try:
+                        location = message.route_nodes.index(self)-1
+                    except AttributeError:
+                        location = -1
+                    except ValueError:
+                        location = 0
+                    if location >= 0:
+                        right_to_left = int(self.links[message.route_nodes[location].name].right_to_left)
+                        if message.route_nodes[location].add_message(message, right_to_left):
+                            self.buffer[i][-1] = None
+                        else:
+                            self.buffer[i].rotate(-1)
+                    else:
+                        self.buffer[i][-1] = None
 
     def update_display(self):
 
@@ -100,17 +115,17 @@ class Node:
             return[[]]
         if destination == self.name:
             return[[self]]
-        try:
-            return[[self.links[destination].dest, self]]
-        except KeyError:
-            routes = []
-            for link in self.links:
-                # These variable names are terrible
-                rest = self.links[link].dest.route(destination, depth)
-                for r in rest:
-                    r.append(self)
-                    routes.append(r)
-            return routes
+        # try:
+        #     return[[self.links[destination].dest, self]]
+        # except KeyError:
+        routes = []
+        for link in self.links:
+            # These variable names are terrible
+            rest = self.links[link].dest.route(destination, depth)
+            for r in rest:
+                r.append(self)
+                routes.append(r)
+        return routes
 
     def ascii_art(self):
         """

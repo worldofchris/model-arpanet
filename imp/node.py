@@ -42,13 +42,14 @@ class Node:
         print("connect")
         i = 0
         j = 0
+        on = 1
         while not self.network.isconnected():
             j += 1
             if j >= DELAY:
                 print("connecting...")
                 j = 0
                 self.display.clear(False)
-                self.display.set_light(i, 0)
+                self.display.set_light(i, on)
                 i += 1
                 if i >= self.display.length():
                     i = 0
@@ -59,7 +60,7 @@ class Node:
         self.sock.bind((udp_ip, UDP_PORT))
 
         for i in range(self.display.length()):
-            self.display.set_light(i, 0)
+            self.display.set_light(i, on)
 
         self.connection_status = True
 

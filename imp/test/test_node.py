@@ -11,8 +11,9 @@ class test_node(unittest.TestCase):
 
     @patch('socket.socket')
     def test_connect_to_network(self, socket):
-        # it searches for a network to connect to
-
+        """
+        It searches for a network to connect to
+        """
         network = MagicMock()
         network.active = MagicMock()
         network.connect = MagicMock()
@@ -34,10 +35,11 @@ class test_node(unittest.TestCase):
         assert node.display.set_light.call_count == len(connection_status)
         assert mock_socket.bind.call_count == 1
 
-    # it recognises itself in a broadcast message
     @patch('socket.socket')
     def test_recv(self, socket):
-
+        """
+        It recognises itself in a broadcast message
+        """
         state = {'utah': [1, 2, 3]}
         message = json.dumps(state)
 
@@ -54,10 +56,11 @@ class test_node(unittest.TestCase):
         node.listen()
         assert node.display.set_light.call_count == 4, node.display.set_light.call_count
 
-    # it ignores messages that it doesn't figure in
     @patch('socket.socket')
-    def test_recv(self, socket):
-
+    def test_ignore(self, socket):
+        """
+        It ignores messages that it doesn't figure in
+        """
         state = {'sri': [1, 2, 3]}
         message = json.dumps(state)
 

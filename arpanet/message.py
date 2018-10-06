@@ -27,7 +27,9 @@ class Message:
 
     def route(self, origin):
         """
-        Work out the route for the message to take.
+        Work out the route for the message to take.  I was in two minds
+        about whether to make this the responsibility of the nodes or the messages
+        It's a bit of a halfway house at the moment.
         """
         routes = origin.route(self.dest)
         weights = []
@@ -40,7 +42,6 @@ class Message:
                 weights.append(weight)
             lowest = (weights.index(min(weights)))
             self.route_nodes = routes[lowest]
-        return
 
     def step(self):
         """

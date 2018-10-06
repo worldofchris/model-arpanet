@@ -4,8 +4,17 @@ Blinkenlights Display
 import neopixel
 import machine
 
-PALETTE = [(128,0,0),
-           (139,0,0),
+PALETTE = [(0, 0, 0),
+           (255,89,143),
+           (255, 0, 0),
+           (0, 255, 0),
+           (0, 0, 255),
+           (255,89,143),
+           (253,138,94),
+           (224,227,0),
+           (1,221,221),
+           (0,191,175),
+           (0, 255, 0),
            (165,42,42),
            (178,34,34),
            (220,20,60),
@@ -116,6 +125,8 @@ class Display:
         """
         Set the RGB colour for a Blinkenlight
         """
+        if palette_index is None:
+            palette_index = 0
         self.neo_pixel[light_index] = PALETTE[palette_index]
         self.neo_pixel.write()
 
