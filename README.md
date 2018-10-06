@@ -38,6 +38,8 @@ Put the `SSID` and `password` for the WIFI you are using in a file called `wifi.
 
 	ssid,password
 
+Then deploy with:
+
 	make deploy [NODENAME=name]
 
 Where `name` is the unique name for the IMP which it uses to identify messages broadcast from the host.
